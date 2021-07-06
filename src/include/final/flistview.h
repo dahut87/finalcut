@@ -340,6 +340,9 @@ class FListView : public FWidget
     bool                  unsetTreeView();
 
     // Methods
+    int                   getindex();
+    void                  setindex(int);
+    void                  setmark(int);
     virtual int           addColumn (const FString&, int = USE_MAX_SIZE);
     void                  hide() override;
     iterator              insert (FListViewItem*);
@@ -441,9 +444,9 @@ class FListView : public FWidget
     void                  drawScrollbars() const;
     void                  drawHeadlines();
     void                  drawList();
-    void                  drawListLine (const FListViewItem*, bool, bool);
+    void                  drawListLine (const FListViewItem*, bool, bool, bool, bool);
     void                  clearList();
-    void                  setLineAttributes (bool, bool) const;
+    void                  setLineAttributes (bool, bool, bool, bool) const;
     FString               getCheckBox (const FListViewItem* item) const;
     FString               getLinePrefix (const FListViewItem*, std::size_t) const;
     void                  drawSortIndicator (std::size_t&, std::size_t);
@@ -498,6 +501,7 @@ class FListView : public FWidget
     FObjectList           selflist{};
     FObjectList           itemlist{};
     FListViewIterator     current_iter{};
+    FListViewIterator     mark_iter{};  
     FListViewIterator     first_visible_line{};
     FListViewIterator     last_visible_line{};
     HeaderItems           header{};

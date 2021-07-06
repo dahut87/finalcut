@@ -910,6 +910,7 @@ void FListView::clear()
 {
   itemlist.clear();
   current_iter = getNullIterator();
+  mark_iter = getNullIterator();
   first_visible_line = getNullIterator();
   last_visible_line = getNullIterator();
   recalculateVerticalBar (0);
@@ -1428,6 +1429,37 @@ inline void FListView::mapKeyFunctions()
 }
 
 //----------------------------------------------------------------------
+void FListView::setindex(int index)
+{
+    if (index==-666)
+        current_iter=getNullIterator();
+    else 
+    {
+        current_iter=itemlist.begin();
+        current_iter+=index;
+        scrollToY(index);
+    }
+    draw();
+}
+//----------------------------------------------------------------------
+void FListView::setmark(int index)
+{
+    if (index==-666)
+        current_iter=getNullIterator();
+    else 
+    {
+        mark_iter=itemlist.begin();
+        mark_iter+=index;
+        scrollToY(index);
+    }
+    draw();
+}
+//----------------------------------------------------------------------
+int FListView::getindex()
+{
+    return current_iter.getPosition();
+}
+//----------------------------------------------------------------------
 void FListView::processKeyAction (FKeyEvent* ev)
 {
   const auto idx = ev->key();
@@ -1608,6 +1640,8 @@ void FListView::drawList()
   while ( iter != path_end && iter != itemlist_end && y < page_height )
   {
     const bool is_current_line( iter == current_iter );
+    const bool is_current_mark( iter == mark_iter );
+    const bool is_current_selected=false;
     const auto& item = static_cast<FListViewItem*>(*iter);
     const int tree_offset = tree_view ? int(item->getDepth() << 1) + 1 : 0;
     const int checkbox_offset = item->isCheckable() ? 1 : 0;
@@ -1615,7 +1649,7 @@ void FListView::drawList()
     print() << FPoint{2, 2 + int(y)};
 
     // Draw one FListViewItem
-    drawListLine (item, getFlags().focus, is_current_line);
+    drawListLine (item, getFlags().focus, is_current_line, is_current_mark, is_current_selected);
 
     if ( getFlags().focus && is_current_line )
     {
@@ -1651,10 +1685,10 @@ void FListView::drawList()
 //----------------------------------------------------------------------
 void FListView::drawListLine ( const FListViewItem* item
                              , bool is_focus
-                             , bool is_current )
+                             , bool is_current, bool is_mark, bool is_selected )
 {
   // Set line color and attributes
-  setLineAttributes (is_current, is_focus);
+  setLineAttributes (is_current, is_focus, is_mark, is_selected);
 
   // Print the entry
   const std::size_t indent = item->getDepth() << 1;  // indent = 2 * depth
@@ -1758,7 +1792,7 @@ void FListView::clearList()
 
 //----------------------------------------------------------------------
 inline void FListView::setLineAttributes ( bool is_current
-                                         , bool is_focus ) const
+                                         , bool is_focus,  bool is_mark, bool is_selected ) const
 {
   const auto& wc = getColorTheme();
   setColor (wc->list_fg, wc->list_bg);
@@ -1790,6 +1824,10 @@ inline void FListView::setLineAttributes ( bool is_current
     else if ( is_focus && FTerm::getMaxColor() < 16 )
       unsetBold();
   }
+  if ( is_selected )
+          setColor ( FColor::White , FColor::Black );
+  if ( is_mark )
+          setColor ( FColor::White, FColor::Red );  
 }
 
 //----------------------------------------------------------------------

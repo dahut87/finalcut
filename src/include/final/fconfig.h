@@ -30,9 +30,7 @@
 #endif
 
 /* Define to 1 if you have the `getttynam' function. */
-#ifndef F_HAVE_GETTTYNAM
-#define F_HAVE_GETTTYNAM 1
-#endif
+/* #undef HAVE_GETTTYNAM */
 
 /* Define to 1 if you have the `getuid' function. */
 #ifndef F_HAVE_GETUID
@@ -50,9 +48,7 @@
 #endif
 
 /* Define to 1 if GPM mouse is enabled */
-#ifndef F_HAVE_LIBGPM
-#define F_HAVE_LIBGPM 1
-#endif
+/* #undef HAVE_LIBGPM */
 
 /* Define to 1 if you have the <linux/fb.h> header file. */
 #ifndef F_HAVE_LINUX_FB_H
@@ -144,9 +140,7 @@
 #endif
 
 /* Define to 1 if you have the <ttyent.h> header file. */
-#ifndef F_HAVE_TTYENT_H
-#define F_HAVE_TTYENT_H 1
-#endif
+/* #undef HAVE_TTYENT_H */
 
 /* Define to 1 if you have the <unistd.h> header file. */
 #ifndef F_HAVE_UNISTD_H

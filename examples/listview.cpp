@@ -25,7 +25,6 @@
 #include <fstream>
 #include <string>
 #include <vector>
-
 #include <final/final.h>
 
 using finalcut::FPoint;
@@ -61,10 +60,16 @@ class Listview final : public finalcut::FDialog
 
     // Callback method
     void cb_showInMessagebox();
-
+    void cb_showIndexInMessagebox();
+    void cb_doit();
+    void cb_doit2();
+    
     // Data members
     finalcut::FListView listview{this};
     finalcut::FButton   quit{this};
+    finalcut::FButton   Mark{this};
+    finalcut::FButton   Index{this};
+    finalcut::FButton   GIndex{this};
 };
 
 //----------------------------------------------------------------------
@@ -100,10 +105,11 @@ Listview::Listview (finalcut::FWidget* parent)
 
   // Populate FListView with a list of items
   populate();
-
   // Quit button
   quit.setText (L"&Quit");
-
+  Mark.setText("&Mark");
+  Index.setText("&Getindex");
+  GIndex.setText("&Index");
   // Add some function callbacks
   quit.addCallback
   (
@@ -118,6 +124,24 @@ Listview::Listview (finalcut::FWidget* parent)
     "clicked",
     this, &Listview::cb_showInMessagebox
   );
+  Mark.addCallback
+  (
+    "clicked",
+    this, &Listview::cb_doit
+  );
+  
+  Index.addCallback
+  (
+    "clicked",
+    this, &Listview::cb_showIndexInMessagebox
+  );
+
+  GIndex.addCallback
+  (
+    "clicked",
+    this, &Listview::cb_doit2
+  );
+
 }
 
 //----------------------------------------------------------------------
@@ -181,7 +205,10 @@ void Listview::initLayout()
   // Set FListView geometry
   listview.setGeometry(FPoint{2, 1}, FSize{33, 14});
   // Set quit button geometry
-  quit.setGeometry(FPoint{24, 16}, FSize{10, 1});
+  quit.setGeometry(FPoint{30, 16}, FSize{10, 1});
+  Index.setGeometry(FPoint{13, 16}, FSize{10, 1});
+  Mark.setGeometry(FPoint{1, 15}, FSize{10, 1});
+  GIndex.setGeometry(FPoint{1, 17}, FSize{10, 1});
   FDialog::initLayout();
 }
 
@@ -191,6 +218,16 @@ void Listview::onClose (finalcut::FCloseEvent* ev)
   finalcut::FApplication::closeConfirmationDialog (this, ev);
 }
 
+//----------------------------------------------------------------------
+void Listview::cb_doit()
+{
+    listview.setmark(listview.getindex());
+}
+//----------------------------------------------------------------------
+void Listview::cb_doit2()
+{
+    listview.setindex(17);
+}
 //----------------------------------------------------------------------
 void Listview::cb_showInMessagebox()
 {
@@ -206,7 +243,18 @@ void Listview::cb_showInMessagebox()
                              , this );
   info.show();
 }
-
+//----------------------------------------------------------------------
+void Listview::cb_showIndexInMessagebox()
+{
+  finalcut::FString index;
+  index.setNumber(listview.getindex());
+  finalcut::FMessageBox info ( "Test","The Index is :"+index
+                             , finalcut::FMessageBox::ButtonType::Ok
+                             , finalcut::FMessageBox::ButtonType::Reject
+                             , finalcut::FMessageBox::ButtonType::Reject
+                             , this );
+  info.show();
+}
 
 //----------------------------------------------------------------------
 //                               main part
