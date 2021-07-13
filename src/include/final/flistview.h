@@ -342,7 +342,10 @@ class FListView : public FWidget
     // Methods
     int                   getindex();
     void                  setindex(int);
+    int                   getmark();
     void                  setmark(int);
+    std::vector<int>      getmultimark();
+    void                  setmultimark(std::vector<int> mark);
     virtual int           addColumn (const FString&, int = USE_MAX_SIZE);
     void                  hide() override;
     iterator              insert (FListViewItem*);
@@ -527,7 +530,7 @@ class FListView : public FWidget
     bool                  tree_view{false};
     bool                  hide_sort_indicator{false};
     bool                  has_checkable_items{false};
-
+    std::vector<int>      multi;
     // Function Pointer
     bool (*user_defined_ascending) (const FObject*, const FObject*){nullptr};
     bool (*user_defined_descending) (const FObject*, const FObject*){nullptr};

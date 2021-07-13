@@ -1429,30 +1429,43 @@ inline void FListView::mapKeyFunctions()
 }
 
 //----------------------------------------------------------------------
+std::vector<int> FListView::getmultimark()
+{
+    return multi;
+}
+//----------------------------------------------------------------------
+void FListView::setmultimark(std::vector<int> mark)
+{
+    multi=mark;
+}
+//----------------------------------------------------------------------
 void FListView::setindex(int index)
 {
-    if (index==-666)
+    if (index<0)
         current_iter=getNullIterator();
     else 
     {
         current_iter=itemlist.begin();
         current_iter+=index;
-        scrollToY(index);
     }
     draw();
 }
 //----------------------------------------------------------------------
 void FListView::setmark(int index)
 {
-    if (index==-666)
+    if (index<0)
         current_iter=getNullIterator();
     else 
     {
         mark_iter=itemlist.begin();
         mark_iter+=index;
-        scrollToY(index);
     }
     draw();
+}
+//----------------------------------------------------------------------
+int FListView::getmark()
+{
+    return mark_iter.getPosition();
 }
 //----------------------------------------------------------------------
 int FListView::getindex()
@@ -1641,7 +1654,13 @@ void FListView::drawList()
   {
     const bool is_current_line( iter == current_iter );
     const bool is_current_mark( iter == mark_iter );
-    const bool is_current_selected=false;
+    bool is_current_selected=false;
+    for(int item: multi)
+        if (item==current_iter.getPosition())
+        {
+            is_current_selected=true;
+            break;        
+        }
     const auto& item = static_cast<FListViewItem*>(*iter);
     const int tree_offset = tree_view ? int(item->getDepth() << 1) + 1 : 0;
     const int checkbox_offset = item->isCheckable() ? 1 : 0;
@@ -1825,7 +1844,7 @@ inline void FListView::setLineAttributes ( bool is_current
       unsetBold();
   }
   if ( is_selected )
-          setColor ( FColor::White , FColor::Black );
+          setColor ( FColor::White , FColor::Green );
   if ( is_mark )
           setColor ( FColor::White, FColor::Red );  
 }
