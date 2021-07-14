@@ -1431,12 +1431,22 @@ inline void FListView::mapKeyFunctions()
 //----------------------------------------------------------------------
 std::vector<int> FListView::getmultimark()
 {
-    return multi;
+    std::vector<int> list;
+    for(FListViewIterator item: multi)
+        list.push_back(item.getPosition());
+    return list;
 }
 //----------------------------------------------------------------------
-void FListView::setmultimark(std::vector<int> mark)
+void FListView::setmultimark(std::vector<int> list)
 {
-    multi=mark;
+    multi.clear();
+    for(int mark: list)
+    {
+        
+        FListViewIterator newiterator=itemlist.begin();
+        newiterator+=mark;
+        multi.push_back(newiterator);
+    }
 }
 //----------------------------------------------------------------------
 void FListView::setindex(int index)
@@ -1655,8 +1665,8 @@ void FListView::drawList()
     const bool is_current_line( iter == current_iter );
     const bool is_current_mark( iter == mark_iter );
     bool is_current_selected=false;
-    for(int item: multi)
-        if (item==current_iter.getPosition())
+    for(FListViewIterator item: multi)
+        if (item==iter)
         {
             is_current_selected=true;
             break;        
@@ -1815,8 +1825,9 @@ inline void FListView::setLineAttributes ( bool is_current
 {
   const auto& wc = getColorTheme();
   setColor (wc->list_fg, wc->list_bg);
-
-  if ( is_current )
+  if ( is_mark )
+          setColor ( FColor::White, FColor::Red );  
+  else if ( is_current )
   {
     if ( is_focus && FTerm::getMaxColor() < 16 )
       setBold();
@@ -1836,6 +1847,8 @@ inline void FListView::setLineAttributes ( bool is_current
     if ( FTerm::isMonochron() )
       setReverse(false);
   }
+  else if ( is_selected )
+      setColor ( FColor::White , FColor::Green );
   else
   {
     if ( FTerm::isMonochron() )
@@ -1843,10 +1856,6 @@ inline void FListView::setLineAttributes ( bool is_current
     else if ( is_focus && FTerm::getMaxColor() < 16 )
       unsetBold();
   }
-  if ( is_selected )
-          setColor ( FColor::White , FColor::Green );
-  if ( is_mark )
-          setColor ( FColor::White, FColor::Red );  
 }
 
 //----------------------------------------------------------------------

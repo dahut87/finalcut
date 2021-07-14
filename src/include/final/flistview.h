@@ -530,7 +530,7 @@ class FListView : public FWidget
     bool                  tree_view{false};
     bool                  hide_sort_indicator{false};
     bool                  has_checkable_items{false};
-    std::vector<int>      multi;
+    std::vector<FListViewIterator>      multi;
     // Function Pointer
     bool (*user_defined_ascending) (const FObject*, const FObject*){nullptr};
     bool (*user_defined_descending) (const FObject*, const FObject*){nullptr};
